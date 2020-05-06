@@ -25,6 +25,10 @@ def extract_short_term_features(features, features_names):
         # Creates new array of only short term features and respective names
         short_features.append(features[x])
         short_features_names.append(features_names[x])
+
+    # Flattens 2d list into 1d list
+    short_features = [i for num in short_features for i in num]
+
     return short_features, short_features_names
 
 
