@@ -8,14 +8,13 @@ import convert_mp3_to_wav as convert
 # Declare variables
 first_time = True
 ## If you want first_variant keep True, if you want second variant, make False
-first_variant = False
+first_variant = True
 ## File path to folder where the audio files are located
-file_path = "dataset/audio/MEMD_audio"
+file_path = "test_audio"
 
 
 # Converts all mp3 files to wav files
 convert.convert_dir_mp3_to_wav(file_path, 16000, 1)
-
 
 # Loops through file with audio
 for file in pathlib.Path(file_path).iterdir():
@@ -32,11 +31,11 @@ for file in pathlib.Path(file_path).iterdir():
 
         # Extracts features
         if first_variant:
-                F, f_names = stfe.feature_extraction(x, Fs, 0.500 * Fs, 0.025 * Fs)
-                # Creates individual csv file
-                csv_name = (Path(file).stem + "_st_features.csv")
+            F, f_names = stfe.feature_extraction(x, Fs, 0.500 * Fs, 0.500 * Fs)
+            # Creates individual csv file
+            csv_name = (Path(file).stem + "_st_features.csv")
         else:
-            F, f_names = stfe.feature_extraction(x, Fs, 0.500 * Fs, 45.0 * Fs)
+            F, f_names = stfe.feature_extraction(x, Fs, 45.0 * Fs, 45.0 * Fs)
 
         # Extracts short term features
         short_term_features, short_term_features_names = stfe.extract_short_term_features(F, f_names)
