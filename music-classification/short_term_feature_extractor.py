@@ -3,6 +3,7 @@ from pyAudioAnalysis import audioBasicIO
 from pyAudioAnalysis import ShortTermFeatures
 from pathlib import Path
 import csv
+import pandas as pd
 
 
 # Reads wav file
@@ -18,7 +19,7 @@ def feature_extraction(signal, sampling_rate, window, step, deltas=True):
 
 
 # Extracts short term features, and their names, from all features
-def extract_short_term_features(features, features_names):
+def extract_short_term_features(features, features_names, variant):
     short_features = []
     short_features_names = []
     for x in range(0, 34):
@@ -26,8 +27,9 @@ def extract_short_term_features(features, features_names):
         short_features.append(features[x])
         short_features_names.append(features_names[x])
 
-    # Flattens 2d list into 1d list
-    short_features = [i for num in short_features for i in num]
+    if variant is False:
+        # Flattens 2d list into 1d list
+        short_features = [i for num in short_features for i in num]
 
     return short_features, short_features_names
 
@@ -58,3 +60,7 @@ def create_csv(csv_file_name, file_audio_name, short_features_names, short_featu
                     file_writer.writerow(short_features[i])
             else:
                 file_writer.writerow(short_features)
+
+    read_file = pd.read_csv(csv_file_name)
+    read_file.to_csv(csv_file_name, index=False)
+
