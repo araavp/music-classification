@@ -1,10 +1,9 @@
 # Imports
-from pyAudioAnalysis import audioBasicIO
-from pyAudioAnalysis import ShortTermFeatures
+from pyAudioAnalysis import audioBasicIO, MidTermFeatures, ShortTermFeatures
 from pathlib import Path
 import csv
 import pandas as pd
-
+import numpy as np
 
 # Reads wav file
 def read_audio_file(wav_file):
@@ -13,23 +12,30 @@ def read_audio_file(wav_file):
 
 
 # Extracts all the features of the wav song
-def feature_extraction(signal, sampling_rate, window, step, deltas=True):
-    F, f_names = ShortTermFeatures.feature_extraction(signal, sampling_rate, window, step, deltas)
-    return F, f_names
+def feature_extraction(signal, sampling_rate, mid_window, mid_step, short_window, short_step):
+    G, F, f_names = MidTermFeatures.mid_feature_extraction(signal, sampling_rate, mid_window, mid_step, short_window, short_step)
+    return G, F, f_names
 
 
 # Extracts short term features, and their names, from all features
 def extract_short_term_features(features, features_names, variant):
+    short_features_temp = []
     short_features = []
     short_features_names = []
     for x in range(0, 34):
         # Creates new array of only short term features and respective names
-        short_features.append(features[x])
+        short_features_temp.append(features[x])
         short_features_names.append(features_names[x])
 
-    if variant is False:
-        # Flattens 2d list into 1d list
-        short_features = [i for num in short_features for i in num]
+    if variant:
+        short_features = short_features_temp
+    else:
+        # Takes average of the window features to create one number for each feature, for each song
+        for x in range(len(short_features_temp)):
+            total = 0
+            for y in range(len(short_features_temp[0])):
+                total += short_features_temp[x][y]
+            short_features.append(total / len(short_features_temp[x]))
 
     return short_features, short_features_names
 
